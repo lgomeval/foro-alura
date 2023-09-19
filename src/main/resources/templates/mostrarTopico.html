@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topicos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+    <h1>Resultado de la busqueda de Topicos</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <!-- <th>ID</th> -->
+                <th>Titulo</th>
+                <th>Mensaje</th>
+                <th>Autor</th>
+                <th>Curso</th>
+                <th>Estado</th>
+                <th>Fecha creacion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="topicos : ${topicos}">
+                <!-- <td th:text="${topicos.id}"></td> -->
+                <td th:text="${topicos.titulo}"></td>
+                <td th:text="${topicos.mensaje}"></td>
+                <td th:text="${topicos.autor}"></td>
+                <td th:text="${topicos.curso}"></td>
+                <td th:text="${topicos.estatus}"></td>
+                <td th:text="${topicos.fecha_creacion}"></td>
+            </tr>
+        </tbody>
+    </table><hr><br>
+
+    <a href="/topicos"><button class="btn btn-primary">Volver al Foro</button></a>
+</div>
+    
+</body>
+</html>

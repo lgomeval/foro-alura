@@ -10,31 +10,62 @@
     <div class="container">
     <h1>Interactue con los demas usuarios</h1>
 
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <form class="d-flex" role="search" th:action="@{/topicos/mostrarTopico}" method="get">
+            <input class="form-control me-2" type="search" name="id" placeholder="Buscar Topico" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Buscar</button>
+          </form>
+        </div>
+      </nav>
+
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+                <!-- <th>ID</th> -->
                 <th>Titulo</th>
                 <th>Mensaje</th>
                 <th>Autor</th>
-                <!-- <th>Estado</th> -->
-                <th>Fecha</th>
+                <th>Curso</th>
+                <th>Estado</th>
+                <th></th>
+                <th></th>
+                <th>Fecha creacion</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="topicos : ${topicos}">
-                <td th:text="${topicos.id}"></td>
+                <!-- <td th:text="${topicos.id}"></td> -->
                 <td th:text="${topicos.titulo}"></td>
                 <td th:text="${topicos.mensaje}"></td>
                 <td th:text="${topicos.autor}"></td>
-                <!-- <td th:text="${topicos.estatus}"></td> -->
+                <td th:text="${topicos.curso}"></td>
+                <td th:text="${topicos.estatus}"></td>
+                <td>
+                    <form th:action="@{/topicos/actualizar}" method="get">
+                        <input type="hidden" name="id" th:value="${topicos.id}">
+                        <button class="btn btn-secondary" type="submit">Modificar</button>
+                    </form>
+                </td>
+                <td>
+                    <!-- <form th:action="@{/topicos/eliminar}" method="post">
+                        <input type="hidden" name="id" th:value="${topicos.id}">
+                        <button class="btn btn-danger" type="button" data-toggle="modal" th:data-target="'#confirmDeleteModal-' + ${topicos.id}">Eliminar</button>
+                    </form> -->
+                    <a class="btn btn-danger" th:href="@{/topicos/confirmar-eliminacion(id=${topicos.id})}">Eliminar</a>
+                </td>
                 <td th:text="${topicos.fecha_creacion}"></td>
             </tr>
         </tbody>
-    </table><hr><br>
+    </table>
 
-    <a href="/agregar"><button class="btn btn-success">Crea un nuevo topico</button></a>
+    
+    <hr><br>
+
+    <a href="topicos/agregar"><button class="btn btn-success">Crea un nuevo topico</button></a>
     <a href="/"><button class="btn btn-primary">Volver al Home</button></a>
+
+
 </div>
     
 </body>

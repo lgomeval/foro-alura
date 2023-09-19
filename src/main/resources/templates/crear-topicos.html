@@ -15,7 +15,7 @@
     <div class="container"><br>
       <h1 class="text-bg-success">Aqui podras insertar los topicos a Nuestro Foro</h1>
 
-      <form class="form-control" th:object="${Topico}" th:action="@{/crear-topicos}" method="post">
+      <form class="form-control" th:object="${Topico}" th:action="@{/topicos/crear-topicos}" method="post">
         <label class="form-label text-bg-dark" for="titulo">Titulo :</label>
         <input class="form-control"
           type="text"
@@ -56,18 +56,18 @@
           th:field="*{estatus}"
           required/> 
 
-        <label class="form-label text-bg-dark" for="fecha">Fecha :</label>
+        <label class="form-label text-bg-dark" for="fecha_creacion">Fecha :</label>
         <input class="form-control"
           type="date"
-          id="fecha"
-          name="fecha"
+          id="fecha_creacion"
+          name="fecha_creacion"
           th:field="*{fecha_creacion}"
           required/><br>
 
         <button class="btn btn-success" type="submit">Insertar</button>
       </form><br/><br/>
 
-      <a href="/"><button class="btn btn-primary">Volver al Home</button></a>
+      <a href="/topicos"><button class="btn btn-primary">Volver al Home</button></a>
     </div>
   </body>
 </html>
