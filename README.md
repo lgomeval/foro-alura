@@ -26,11 +26,4 @@
     <img src="https://img.shields.io/badge/IDE-Visual Studio Code-blue">
 </p>
 
-
-Spring Boot
-
-MySql
-
-Visual Studio Code
-
  [<img width=115><br><sub>Luis Eduardo Gomez</sub>](https://github.com/lgomeval) |
