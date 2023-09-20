@@ -258,7 +258,7 @@
             <h1 class="fw-light text-left">Autor del Tópico actual : <span th:text="${topicos.autor}"></span></h1>
           </div>
           <div class="container-fluid">
-            <input class="form-control me-2"  readonly type="search" name="id" placeholder="Puedes reaccionar al contenido, pero recuerda las normas de respeto en las respuestas.">
+            <input class="form-control me-2"  readonly type="search" name="id" placeholder=" ¿ Estás seguro de que deseas eliminar el tópico ?.">
           </div>
         </div>
       </section>
@@ -285,23 +285,15 @@
                   <div
                     class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                    <form th:action="@{/topicos/actualizar}" method="get">
+                      <!-- Botón para confirmar la eliminación -->
+                      <form th:action="@{/topicos/eliminar}" method="post">
                         <input type="hidden" name="id" th:value="${topicos.id}">
-                        <button class="btn btn-sm btn-outline-success" type="submit">Modificar</button>
-                    </form> 
-                      
-                      &nbsp;&nbsp;
-
-                      <a class="btn btn-sm btn-outline-danger" th:href="@{/topicos/confirmar-eliminacion(id=${topicos.id})}">Eliminar</a>
-                    </div> 
-                  </div>
-                  <a class="icon-link" href="#" th:text="${topicos.autor}"></a><br>
-                  <a class="icon-link" href="#" th:text="${topicos.curso}"></a>
-                  <small class="text-body-primary" ></small><br>
-                  <span>Creado : <small class="text-body-primary" th:text="${topicos.fecha_creacion}"></small></span><br>
+                        <button class="btn btn-outline-danger my-2" type="submit">Eliminar</button><br><br>
+                      </form>
+                    </div>
                 </div>             
               </div>
-              <p>
+              <p class="text-center">
                 <a href="/topicos" class="btn btn-outline-primary my-2">Volver al Foro</a>
               </p>   
             </div>

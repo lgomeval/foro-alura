@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.foroAlura.app.topicos.DatosActualizarTopico;
 import com.foroAlura.app.topicos.DatosRegistroTopico;
 import com.foroAlura.app.topicos.TopicoRepository;
@@ -61,7 +60,6 @@ public class TopicosController {
     @PostMapping("/crear-topicos")
     public String agregar(@ModelAttribute @Valid DatosRegistroTopico datosRegistroTopico) {
 
-        // System.out.println(datosRegistroTopico);
         topicorepository.save(new Topicos(datosRegistroTopico));
 
         return "redirect:/topicos";
@@ -116,7 +114,7 @@ public class TopicosController {
     }
 
     // Metodo para eliminar un Topico
-    @GetMapping("/confirmar-eliminacion")
+    @GetMapping("/eliminar-topico")
     public String confirmarEliminacion(@RequestParam Long id, Model model) {
 
         Topicos topicos = topicorepository.findById(id).orElse(null);
@@ -127,7 +125,7 @@ public class TopicosController {
             return "error-404";
         }
 
-        return "confirmar-eliminacion";
+        return "eliminar-topico";
     }
 
     @PostMapping("/eliminar")
