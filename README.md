@@ -8,7 +8,10 @@
 
 ## :hammer:Funcionalidades del proyecto
 
-- `Funcionalidad 1`: descripción de la funcionalidad 1-  |  `Funcionalidad 2`: descripción de la funcionalidad 2- `Funcionalidad 2a`: descripción de la funcionalidade 2a relacionada con la funcionalidad 2- `Funcionalidad 3`: descripción de la funcionalidad 3
+- `Funcionalidad 1`: CRUD para Tópicos de una pagina Web estilo Foro.  
+- `Funcionalidad 2`: Permitir creacion de usuarios para intereactuar en el foro- 
+- `Funcionalidad 2a`: descripción de la funcionalidade 2a relacionada con la funcionalidad 2
+- `Funcionalidad 3`: descripción de la funcionalidad 3
 
 
 ## Tecnologia Utilizadas
