@@ -16,9 +16,20 @@
 
 ## Tecnologia Utilizadas
 
-Java 17
+<p align="left">
+    <img src="https://img.shields.io/badge/Lenguaje-JAVA%2017-red">
+</p>
+<p align="left">
+    <img src="https://img.shields.io/badge/Gestor de BBDD-MySQL-yellow">
+</p>
+<p align="left">
+    <img src="https://img.shields.io/badge/IDE-Visual Studio Code-blue">
+</p>
+
 
 Spring Boot
+
+MySql
 
 Visual Studio Code
 
