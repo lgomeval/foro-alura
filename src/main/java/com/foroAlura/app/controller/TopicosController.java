@@ -1,9 +1,14 @@
 package com.foroAlura.app.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +16,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.foroAlura.app.respuestaTopico.RespuestaTopico;
+import com.foroAlura.app.respuestaTopico.RespuestaTopicoRepository;
 import com.foroAlura.app.topicos.DatosActualizarTopico;
 import com.foroAlura.app.topicos.DatosRegistroTopico;
 import com.foroAlura.app.topicos.TopicoRepository;
 import com.foroAlura.app.topicos.Topicos;
-
 import jakarta.validation.Valid;
 
 @Controller
@@ -25,14 +32,24 @@ public class TopicosController {
     @Autowired
     TopicoRepository topicorepository;
 
+    @Autowired
+    RespuestaTopicoRepository respuestatopicorepository;
+
     // Listamos todos los topicos existentes
     @GetMapping
     public String listarTopicos(Model model) {
 
-        List<Topicos> topicos = topicorepository.findAll();
-        model.addAttribute("topicos", topicos);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
-        return "topicos";
+        List<Topicos> topicos = topicorepository.findAll();
+        List<RespuestaTopico> respuestaTopicos = respuestatopicorepository.findAll();
+
+        model.addAttribute("respuestatopicos", respuestaTopicos);
+        model.addAttribute("topicos", topicos);
+        model.addAttribute("usuarios", username);
+
+        return "topicos/topicos";
     }
 
     // Listamos un topico filtrado por id
@@ -44,8 +61,20 @@ public class TopicosController {
         if (topicos == null) {
             return "Error404";
         }
+
+        // MOstrar la respuesta del topico
+
+        RespuestaTopico respuestaTopico = respuestatopicorepository.findById(id).orElse(null);
+        if (respuestaTopico == null) {
+            return "Error404";
+        }
+
+        model.addAttribute("respuestaTopico", respuestaTopico);
+
+        // fin de respuesta topico
+
         model.addAttribute("topicos", topicos);
-        return "mostrarTopico";
+        return "topicos/mostrarTopico";
     }
 
     // Para agregar topicos mostramos el formulario y enviamos los datos
@@ -54,7 +83,7 @@ public class TopicosController {
     public String formularioAgregar(Model model) {
 
         model.addAttribute("Topico", new Topicos());
-        return "crear-topicos";
+        return "topicos/crear-topicos";
     }
 
     @PostMapping("/crear-topicos")
@@ -62,7 +91,7 @@ public class TopicosController {
 
         topicorepository.save(new Topicos(datosRegistroTopico));
 
-        return "redirect:/topicos";
+        return "redirect:/topicos/topicos";
     }
 
     // Metodo para Actualizar un Topico
@@ -75,7 +104,7 @@ public class TopicosController {
             return "Error404";
         }
         model.addAttribute("topicos", topicos);
-        return "actualizar-topicos";
+        return "topicos/actualizar-topicos";
     }
 
     @PostMapping("/actualizar-topicos")
@@ -110,7 +139,7 @@ public class TopicosController {
             topicorepository.save(topicos);
         }
 
-        return "redirect:/topicos";
+        return "redirect:/topicos/topicos";
     }
 
     // Metodo para eliminar un Topico
@@ -125,7 +154,7 @@ public class TopicosController {
             return "error-404";
         }
 
-        return "eliminar-topico";
+        return "topicos/eliminar-topico";
     }
 
     @PostMapping("/eliminar")
@@ -136,4 +165,14 @@ public class TopicosController {
         return "redirect:/topicos";
     }
 
+    // Respuesta de un topico
+    // @GetMapping("/mostrarRespuestaTopico")
+    // public String mostrarRespuestaTopico(@RequestParam Long id, Model model) {
+
+    // List<RespuestaTopico> respuestaTopicos =
+    // respuestatopicorepository.findAllByTopicosId(id);
+    // model.addAttribute("respuestaTopico", respuestaTopicos);
+
+    // return "topicos/mostrarTopico";
+    // }
 }

@@ -18,7 +18,17 @@
       href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
     />
 
-    <link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <script src="https://cdn.tiny.cloud/1/API-KEY/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: 'textarea', // Aplicar TinyMCE a todos los elementos <textarea>
+            height: 300, // Altura del editor
+            plugins: 'link lists', // Plugins que deseas habilitar (puedes agregar más)
+            toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent', // Barra de herramientas personalizable
+        });
+    </script>
 
     <style>
       .bd-placeholder-img {
@@ -93,6 +103,7 @@
       .bd-mode-toggle {
         z-index: 1500;
       }
+
       .icon-link {
         text-decoration: none;
       }
@@ -233,7 +244,9 @@
             <path d="M21 21H3a2 2 0 01-2-2V5a2 2 0 012-2h9l3 3 3-3h2a2 2 0 012 2v14a2 2 0 01-2 2zM10 9H6m4 0h4m-4 4h4m-8 0h4m-4 4h4"></path>
               <circle cx="12" cy="13" r="4" />
             </svg>
-            <strong>Foro Alura Lgomeval</strong>
+            <strong>Foro Alura: Bienvenido -> 
+              <small th:text="${usuarios}"></small>
+            </strong>
           </a>
           <button
             class="navbar-toggler"
@@ -251,29 +264,21 @@
     </header>
 
     <main>
-      <section class="container">
-        <div class="row py-lg-5">
-          <div class="col-lg-6 col-md-8 mx-auto">
-            <h1 class="fw-light">Tópicos más recientes</h1>
-            <p class="lead text-body-secondary">
-            </p>
-            <p>
-              <a href="/topicos/agregar" class="btn btn-outline-primary my-2">Crear nuevo tópico</a>
-            </p>
+      <section class="py-5 text container">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="fw-light text-left">Autor del Tópico actual : <span th:text="${topicos.autor}"></span></h1>
           </div>
           <div class="container-fluid">
-            <form class="d-flex" role="search" th:action="@{/topicos/mostrarTopico}" method="get">
-              <input class="form-control me-2" type="search" name="id" placeholder="Buscar Tópico por ID" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Buscar</button>
-            </form><br>
+            <input class="form-control me-2"  readonly type="search" name="id" placeholder="Puedes reaccionar al contenido, pero recuerda las normas de respeto en las respuestas."><br>
+          
           </div>
         </div>
       </section>
-
-      <div class="album py-5 bg-body-tertiary">
+      <div class="album py-2 bg-body-tertiary">
         <div class="container">
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            <div class="col" th:each="topicos : ${topicos}">
+          <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-1">
+            <div class="col">
               <div class="card shadow-sm" >
                 <svg
                   class="bd-placeholder-img card-img-top"
@@ -300,17 +305,41 @@
                       
                       &nbsp;&nbsp;
 
-                      <a class="btn btn-sm btn-outline-danger" th:href="@{/topicos/eliminar-topico(id=${topicos.id})}">Eliminar</a>
+                      <a class="btn btn-sm btn-outline-danger" th:href="@{/topicos/confirmar-eliminacion(id=${topicos.id})}">Eliminar</a>
                     </div> 
                   </div>
                   <a class="icon-link" href="#" th:text="${topicos.autor}"></a><br>
                   <a class="icon-link" href="#" th:text="${topicos.curso}"></a>
                   <small class="text-body-primary" ></small><br>
                   <span>Creado : <small class="text-body-primary" th:text="${topicos.fecha_creacion}"></small></span><br>
-                </div>                
+                </div>             
               </div>
+              <!-- Mostrar la respuesta del topico -->
+              <div class="py-4">
+                <h1 class="fw-light text-left">Respuestas del Tópico actual :</h1>
+                <div class="card shadow">
+                  <div class="container">               
+                    <span>Por : <a class="icon-link" href="#" th:text="${respuestaTopico.autor}"></a></span><br>
+                    <span>Respuesta : <small class="text-body-primary" th:text="${respuestaTopico.mensaje}"></small></span><br>
+                    <span>Desde : <small class="text-body-primary" th:text="${respuestaTopico.fecha_creacion}"></small></span><br>                 
+                  
+                  </div>
+                </div>
+              </div>
+              
+              <!-- fin de mostrar la respuesta del topico -->
+              
+              <p>
+                <a href="/topicos" class="btn btn-outline-primary my-2">Volver al Foro</a>
+              </p>   
             </div>
           </div>
+            <!-- Probando el textarea -->
+            <form action="" method="get">
+              <textarea name="" id="" cols="30" rows="10"></textarea><br>
+              <button  class="btn btn-outline-warning my-2">Responder</button>
+            </form>      
+  
         </div>
       </div>
     </main>
@@ -318,7 +347,7 @@
     <footer class="text-body-secondary py-5">
       <div class="container">
         <p class="mb-1">
-          Plantilla descargada de &copy; Bootstrap, la cual se modifico con fines de mostrar la funcionalidad el foro, previo consentimiento.
+          Plantilla descargada de &copy; Bootstrap, la cual se modifico con fines de mostrar la funcionalidad del foro.
         </p>
       </div>
     </footer>

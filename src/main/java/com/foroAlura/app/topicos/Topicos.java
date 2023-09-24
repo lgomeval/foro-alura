@@ -1,5 +1,7 @@
 package com.foroAlura.app.topicos;
 
+import com.foroAlura.app.respuestaTopico.DatosRespuestaTopico;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -68,5 +70,11 @@ public class Topicos {
 
     public void setEstatus(String estatus) {
         this.estatus = estatus;
+    }
+
+    public Topicos(DatosRespuestaTopico datosRespuestaTopico) {
+    }
+
+    public void setTieneRespuestas(boolean tieneRespuestas) {
     }
 }

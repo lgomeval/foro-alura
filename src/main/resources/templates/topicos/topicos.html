@@ -95,7 +95,7 @@
       }
 
       .icon-link {
-        text-decoration: none;
+        color: white;
       }
     </style>
   </head>
@@ -212,6 +212,8 @@
                 <li><a href="#" class="text-white">duk000@hotamil.com</a></li>
               </ul>
             </div>
+            <a href="/logout" class="btn btn-outline-danger my-2">Cerrar sesión</a>
+
           </div>
         </div>
       </div>
@@ -234,7 +236,9 @@
             <path d="M21 21H3a2 2 0 01-2-2V5a2 2 0 012-2h9l3 3 3-3h2a2 2 0 012 2v14a2 2 0 01-2 2zM10 9H6m4 0h4m-4 4h4m-8 0h4m-4 4h4"></path>
               <circle cx="12" cy="13" r="4" />
             </svg>
-            <strong>Foro Alura Lgomeval</strong>
+            <strong>Foro Alura: Bienvenido -> 
+              <small th:text="${usuarios}"></small>
+            </strong>
           </a>
           <button
             class="navbar-toggler"
@@ -252,20 +256,29 @@
     </header>
 
     <main>
-      <section class="py-5 text container">
-        <div class="row">
-          <div class="col-12">
-            <h1 class="fw-light text-left">Autor del Tópico actual : <span th:text="${topicos.autor}"></span></h1>
+      <section class="container">
+        <div class="row py-lg-5">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Tópicos más recientes</h1>
+            <p class="lead text-body-secondary">
+            </p>
+            <p>
+              <a href="/topicos/agregar" class="btn btn-outline-primary my-2">Crear nuevo tópico</a>
+            </p>
           </div>
           <div class="container-fluid">
-            <input class="form-control me-2"  readonly type="search" name="id" placeholder="Puedes reaccionar al contenido, pero recuerda las normas de respeto en las respuestas.">
+            <form class="d-flex" role="search" th:action="@{/topicos/mostrarTopico}" method="get">
+              <input class="form-control me-2" type="search" name="id" placeholder="Buscar Tópico por ID" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">Buscar</button>
+            </form><br>
           </div>
         </div>
       </section>
+
       <div class="album py-5 bg-body-tertiary">
         <div class="container">
-          <div class="row row-cols-1 row-cols-sm-1 row-cols-md-1 g-1">
-            <div class="col">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col" th:each="topicos : ${topicos}">
               <div class="card shadow-sm" >
                 <svg
                   class="bd-placeholder-img card-img-top"
@@ -278,12 +291,13 @@
                   focusable="false">
                   <title></title>
                   <rect width="100%" height="100%" fill="#55595c" />
-                  <text x="50%" y="50%" fill="#eceeef" dy=".3em" th:text="${topicos.titulo}"></text>
+                  <a th:href="@{/topicos/mostrarTopico(id=${topicos.id})}" class="icon-link"><text x="50%" y="50%" fill="#eceeef" dy=".3em" th:text="${topicos.titulo}"></text></a>
                 </svg>
                 <div class="card-body">
-                  <p class="card-text" th:text="${topicos.mensaje}"></p>
-                  <div
-                    class="d-flex justify-content-between align-items-center">
+                  <a th:href="@{/topicos/mostrarTopico(id=${topicos.id})}" class="icon-link" th:text="${topicos.mensaje}"></a>
+                  <!-- contador de respuestas -->
+
+                  <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                     <form th:action="@{/topicos/actualizar}" method="get">
                         <input type="hidden" name="id" th:value="${topicos.id}">
@@ -292,18 +306,15 @@
                       
                       &nbsp;&nbsp;
 
-                      <a class="btn btn-sm btn-outline-danger" th:href="@{/topicos/confirmar-eliminacion(id=${topicos.id})}">Eliminar</a>
+                      <a class="btn btn-sm btn-outline-danger" th:href="@{/topicos/eliminar-topico(id=${topicos.id})}">Eliminar</a>
                     </div> 
                   </div>
                   <a class="icon-link" href="#" th:text="${topicos.autor}"></a><br>
                   <a class="icon-link" href="#" th:text="${topicos.curso}"></a>
                   <small class="text-body-primary" ></small><br>
                   <span>Creado : <small class="text-body-primary" th:text="${topicos.fecha_creacion}"></small></span><br>
-                </div>             
+                </div>                
               </div>
-              <p>
-                <a href="/topicos" class="btn btn-outline-primary my-2">Volver al Foro</a>
-              </p>   
             </div>
           </div>
         </div>
