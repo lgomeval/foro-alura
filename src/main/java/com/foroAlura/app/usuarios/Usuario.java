@@ -4,12 +4,15 @@ import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,14 +29,37 @@ public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
-    private String password;
+
     private String username;
+
+    @Transient
+    private String passwordSinEncriptar;
+
+    private String password;
+
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(10);
+
+    // Contructor
+    public Usuario(DatosRegistroUsuario datosRegistroUsuario) {
+
+        this.email = datosRegistroUsuario.email();
+        this.username = datosRegistroUsuario.username();
+        this.passwordSinEncriptar = datosRegistroUsuario.password();
+        this.password = PASSWORD_ENCODER.encode(datosRegistroUsuario.password());
+        // this.password = datosRegistroUsuario.password();
+    }
 
     @Override
     public String getPassword() {
 
         return password;
+    }
+
+    public void setPassword(String password) {
+        this.passwordSinEncriptar = password;
+        this.password = PASSWORD_ENCODER.encode(password);
     }
 
     @Override
@@ -49,31 +75,31 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'getAuthorities'");
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'isAccountNonExpired'");
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'isAccountNonLocked'");
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'isCredentialsNonExpired'");
     }
 
     @Override
     public boolean isEnabled() {
-        // TODO Auto-generated method stub
+
         throw new UnsupportedOperationException("Unimplemented method 'isEnabled'");
     }
 }

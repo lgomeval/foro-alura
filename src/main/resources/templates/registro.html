@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+<body>
+    <section th:replace="~{plantilla :: menu-contraste}"></section>
+    <header th:replace="~{plantilla :: header}"></header>
+    
+        <main>
+          <section class="container">
+            <div class="row py-lg-5">
+              <div class="col col">
+                <h1 class="fw-light">Aqui podras registrarte para interactuar en nuestro Foro.</h1>
+                <p class="lead text-body-secondary">
+                </p>
+              </div>
+              <div class="container-fluid">
+                <input class="form-control me-2"  readonly type="search" name="id" placeholder="Todos los campos son obligatorios."><br>
+              </div>
+            </div>
+          </section>
+    
+          <div class="album py-5 bg-body-tertiary">
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <div class="card shadow-sm">
+                    <form class="form-control" th:object="${Usuario}" th:action="@{/registro}" method="post">
+                        <label class="form-label text-bg-dark" for="username">Usuario :</label>
+                        <input class="form-control"
+                          type="text"
+                          id="username"
+                          name="username"                          
+                          required/>                              
+                        <label class="form-label text-bg-dark" for="email">Correo Electronico :</label>
+                        <input class="form-control"
+                          type="text"
+                          id="email"
+                          name="email"                                                   required/> 
+                
+                        <label class="form-label text-bg-dark" for="password">Contraseña :</label>
+                        <input class="form-control"
+                          type="password"
+                          id="password"
+                          name="password"                                                    required/> 
+                
+                        <button class="btn btn-outline-success my-2" type="submit">Registrarse </button>
+                      </form>            
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <footer th:replace="~{plantilla :: footer}"></footer>
+</body>
+</html>

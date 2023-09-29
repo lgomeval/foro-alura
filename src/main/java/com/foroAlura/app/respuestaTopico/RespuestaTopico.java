@@ -1,6 +1,9 @@
 package com.foroAlura.app.respuestaTopico;
 
+import java.time.LocalDateTime;
+
 import com.foroAlura.app.topicos.Topicos;
+import com.foroAlura.app.usuarios.Usuario;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,7 +37,17 @@ public class RespuestaTopico {
     @JoinColumn(name = "topico_id")
     private Topicos topicos;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
     public void setTieneRespuestas(boolean tieneRespuestas) {
+    }
+
+    public void setCrear_fecha(LocalDateTime now) {
+    }
+
+    public void setCrearRespuesta(String mensaje2) {
     }
 
 }

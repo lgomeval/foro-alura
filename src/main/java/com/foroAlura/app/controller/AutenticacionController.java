@@ -6,18 +6,21 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.foroAlura.app.configuracion.BCryptPasswordService;
 import com.foroAlura.app.usuarios.DatosAutenticacionUsuario;
+import com.foroAlura.app.usuarios.DatosRegistroUsuario;
 import com.foroAlura.app.usuarios.Usuario;
 import com.foroAlura.app.usuarios.UsuarioRepository;
 
+import org.springframework.ui.Model;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AutenticacionController {
 
@@ -48,7 +51,7 @@ public class AutenticacionController {
 
             if (authentication.isAuthenticated()) {
 
-                return "redirect:/topicos/topicos";
+                return "redirect:/topicos";
 
             }
         }
@@ -56,9 +59,23 @@ public class AutenticacionController {
         return "login";
     }
 
-    @GetMapping(value = "registro")
-    public String mostrarFormularioDeRegistro() {
+    @GetMapping("/registro")
+    public String mostrarFormularioDeRegistro(Model model) {
 
-        return "autorizacion/registro";
+        model.addAttribute("Usuario", new Usuario());
+        return "/registro";
+    }
+
+    @PostMapping("/registro")
+    public String registroUsuario(@ModelAttribute() @Valid DatosRegistroUsuario datosRegistroUsuario,
+            RedirectAttributes redirectAttributes) {
+
+        // Lógica para registrar al usuario aquí
+        usuarioRepository.save(new Usuario(datosRegistroUsuario));
+
+        // Mensaje de confirmacion
+        redirectAttributes.addAttribute("success", "Usuario agregado Exitosamente");
+
+        return "redirect:/login";
     }
 }

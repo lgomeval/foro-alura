@@ -1,0 +1,1 @@
+ALTER TABLE respuesta_topicos ADD usuario_id INT DEFAULT 1;

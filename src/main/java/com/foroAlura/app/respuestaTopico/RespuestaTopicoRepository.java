@@ -8,5 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RespuestaTopicoRepository extends JpaRepository<RespuestaTopico, Long> {
 
+    List<RespuestaTopico> findAllByUsuarioId(Long id);
+
     List<RespuestaTopico> findAllByTopicosId(Long id);
+
 }

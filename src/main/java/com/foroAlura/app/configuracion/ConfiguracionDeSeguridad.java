@@ -9,8 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -24,11 +22,11 @@ public class ConfiguracionDeSeguridad {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/login", "/auth/**")
+                        .requestMatchers("/login", "/registro")
                         .permitAll()
                         .anyRequest()
                         .authenticated())
-                .formLogin(withDefaults())
+                .formLogin().loginPage("/login").permitAll().and()
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login")

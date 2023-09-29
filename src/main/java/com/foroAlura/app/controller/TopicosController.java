@@ -1,9 +1,6 @@
 package com.foroAlura.app.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.foroAlura.app.respuestaTopico.RespuestaTopico;
 import com.foroAlura.app.respuestaTopico.RespuestaTopicoRepository;
@@ -26,7 +24,7 @@ import com.foroAlura.app.topicos.Topicos;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/topicos")
+@RequestMapping
 public class TopicosController {
 
     @Autowired
@@ -36,7 +34,7 @@ public class TopicosController {
     RespuestaTopicoRepository respuestatopicorepository;
 
     // Listamos todos los topicos existentes
-    @GetMapping
+    @GetMapping("/")
     public String listarTopicos(Model model) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -49,32 +47,57 @@ public class TopicosController {
         model.addAttribute("topicos", topicos);
         model.addAttribute("usuarios", username);
 
-        return "topicos/topicos";
+        return "/topicos";
     }
 
-    // Listamos un topico filtrado por id
+    // Listamos un topico filtrado por id, por autor, curso
 
     @GetMapping("/mostrarTopico")
-    public String mostrarTopico(@RequestParam Long id, Model model) {
+    public String mostrarTopico(@RequestParam(name = "id", required = false) Long id,
+            @RequestParam(name = "autor", required = false) String autor,
+            @RequestParam(name = "curso", required = false) String curso,
+            Model model) {
 
-        Topicos topicos = topicorepository.findById(id).orElse(null);
-        if (topicos == null) {
-            return "Error404";
+        if (id != null) {
+            Topicos topicos = topicorepository.findById(id).orElse(null);
+
+            if (topicos == null) {
+                return "Error404";
+            }
+
+            model.addAttribute("topicos", topicos);
+
+            // Mostrar la respuesta del topico
+
+            RespuestaTopico respuestaTopico = respuestatopicorepository.findById(id).orElse(null);
+            if (respuestaTopico == null) {
+                return "Error404";
+            }
+
+            model.addAttribute("respuestaTopico", respuestaTopico);
+
+            // fin de respuesta topico
+
+            return "mostrarTopico";
+
+        } else if (autor != null) {
+
+            List<Topicos> topicosByAutor = topicorepository.findByAutor(autor);
+            model.addAttribute("topicosPorAutor", topicosByAutor);
+
+            return "mostrarTopicosPorAutor";
+
+        } else if (curso != null) {
+
+            List<Topicos> topicosByCurso = topicorepository.findByCurso(curso);
+            model.addAttribute("topicoPorCurso", topicosByCurso);
+            return "mostrarTopicosPorCurso";
+
+        } else {
+
+            return "error404";
         }
 
-        // MOstrar la respuesta del topico
-
-        RespuestaTopico respuestaTopico = respuestatopicorepository.findById(id).orElse(null);
-        if (respuestaTopico == null) {
-            return "Error404";
-        }
-
-        model.addAttribute("respuestaTopico", respuestaTopico);
-
-        // fin de respuesta topico
-
-        model.addAttribute("topicos", topicos);
-        return "topicos/mostrarTopico";
     }
 
     // Para agregar topicos mostramos el formulario y enviamos los datos
@@ -83,15 +106,18 @@ public class TopicosController {
     public String formularioAgregar(Model model) {
 
         model.addAttribute("Topico", new Topicos());
-        return "topicos/crear-topicos";
+        return "/crear-topicos";
     }
 
     @PostMapping("/crear-topicos")
-    public String agregar(@ModelAttribute @Valid DatosRegistroTopico datosRegistroTopico) {
+    public String agregar(@ModelAttribute @Valid DatosRegistroTopico datosRegistroTopico,
+            RedirectAttributes redirectAttributes) {
 
         topicorepository.save(new Topicos(datosRegistroTopico));
+        // Agrega un mensaje flash
+        redirectAttributes.addFlashAttribute("success", "Tópico Agregadado Existosamente");
 
-        return "redirect:/topicos/topicos";
+        return "redirect:/";
     }
 
     // Metodo para Actualizar un Topico
@@ -104,11 +130,12 @@ public class TopicosController {
             return "Error404";
         }
         model.addAttribute("topicos", topicos);
-        return "topicos/actualizar-topicos";
+        return "/actualizar-topicos";
     }
 
     @PostMapping("/actualizar-topicos")
-    public String actualizarTopico(@ModelAttribute @Valid DatosActualizarTopico datosActulizartopicos) {
+    public String actualizarTopico(@ModelAttribute @Valid DatosActualizarTopico datosActulizartopicos,
+            RedirectAttributes redirectAttributes) {
 
         Optional<Topicos> optionalTopicos = topicorepository.findById(datosActulizartopicos.id());
 
@@ -135,11 +162,11 @@ public class TopicosController {
             if (datosActulizartopicos.estatus() != null) {
                 topicos.setEstatus(datosActulizartopicos.estatus());
             }
-
+            redirectAttributes.addFlashAttribute("warning", "Tópico Modificado Existosamente");
             topicorepository.save(topicos);
         }
 
-        return "redirect:/topicos/topicos";
+        return "redirect:/";
     }
 
     // Metodo para eliminar un Topico
@@ -154,25 +181,15 @@ public class TopicosController {
             return "error-404";
         }
 
-        return "topicos/eliminar-topico";
+        return "/eliminar-topico";
     }
 
     @PostMapping("/eliminar")
-    public String eliminar(@RequestParam Long id) {
+    public String eliminar(@RequestParam Long id, RedirectAttributes redirectAttributes) {
 
         topicorepository.deleteById(id);
+        redirectAttributes.addFlashAttribute("danger", "Tópico Eliminado Existosamente");
 
-        return "redirect:/topicos";
+        return "redirect:/";
     }
-
-    // Respuesta de un topico
-    // @GetMapping("/mostrarRespuestaTopico")
-    // public String mostrarRespuestaTopico(@RequestParam Long id, Model model) {
-
-    // List<RespuestaTopico> respuestaTopicos =
-    // respuestatopicorepository.findAllByTopicosId(id);
-    // model.addAttribute("respuestaTopico", respuestaTopicos);
-
-    // return "topicos/mostrarTopico";
-    // }
 }

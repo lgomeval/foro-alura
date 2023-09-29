@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantilla :: head}">
+</head>
+<body>
+  <section th:replace="~{plantilla :: menu-contraste}"></section>
+  <!-- Mensajes de confirmacion -->
+  <div class="container">
+    <div class="alert alert-success alert-dismissible" th:if="${success != null}">
+      <label th:text="${success}"></label>
+      <button type="button" class="btn btn-close" data-dismiss="alert">&times;</button>
+    </div>
+
+    <div class="alert alert-warning alert-dismissible" th:if="${warning != null}">
+      <label th:text="${warning}"></label>
+      <button type="button" class="btn btn-close" data-dismiss="alert">&times;</button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissible" th:if="${danger != null}">
+      <label th:text="${danger}"></label>
+      <button type="button" class="btn btn-close" data-dismiss="alert">&times;</button>
+    </div>
+  </div>
+  <header th:replace="~{plantilla :: header}"></header>
+    <main>
+      <section class="container">
+        <div class="row py-lg-5">
+          <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">Tópicos más recientes</h1>
+            <p class="lead text-body-secondary">
+            </p>
+
+          </div>
+            <p>
+              <a href="/agregar" class="btn btn-outline-primary my-2">Crear nuevo tópico</a>
+            </p>
+          </div>
+          <div class="container-fluid">
+            <form class="d-flex" role="search" th:action="@{/mostrarTopico}" method="get">
+              <input class="form-control me-2" type="search" name="busqueda" placeholder="Buscar Tópico por ID, Autor o Curso" aria-label="Search" id="busquedaInput">
+              <button class="btn btn-outline-success" type="submit">Buscar</button>
+            </form><br>
+          </div>
+        </div>
+      </section>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col" th:each="topicos : ${topicos}">
+              <div class="card shadow-sm" >
+                <svg
+                  class="bd-placeholder-img card-img-top"
+                  width="50%"
+                  height="100"
+                  xmlns="http://www.w3.org/2000/svg"
+                  role="img"
+                  aria-label="Placeholder: Thumbnail"
+                  preserveAspectRatio="xMidYMid slice"
+                  focusable="false">
+                  <title></title>
+                  <rect width="100%" height="100%" fill="#55595c" />
+                  <a th:href="@{/mostrarTopico(id=${topicos.id})}" class="icon-link"><text x="50%" y="50%" fill="#eceeef" dy=".3em" th:text="${topicos.titulo}"></text></a>
+                </svg>
+                <div class="card-body">
+                  <a th:href="@{/mostrarTopico(id=${topicos.id})}" class="icon-link" th:text="${topicos.mensaje}"></a><br><br>
+                  <!-- contador de respuestas -->
+
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                    <form th:action="@{/actualizar}" method="get">
+                        <input type="hidden" name="id" th:value="${topicos.id}">
+                        <button class="btn btn-sm btn-outline-success" type="submit">Modificar</button>
+                    </form>
+
+                      &nbsp;&nbsp;
+
+                      <a class="btn btn-sm btn-outline-danger" th:href="@{/eliminar-topico(id=${topicos.id})}">Eliminar</a>
+                    </div>
+                  </div><br>
+                  <a class="icon-link" href="#" th:text="${topicos.autor}"></a><br>
+                  <a class="icon-link" href="#" th:text="${topicos.curso}"></a>
+                  <small class="text-body-primary" ></small><br>
+                  <span>Creado : <small class="text-body-primary" th:text="${topicos.fecha_creacion}"></small></span><br>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer th:replace="~{plantilla :: footer}"></footer>
+  </body>
+</html>

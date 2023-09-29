@@ -1,8 +1,11 @@
 package com.foroAlura.app.respuestaTopico;
 
-import jakarta.validation.constraints.NotBlank;
-
 public record DatosRespuestaTopico(
+        Long id,
+        String respuestaTopico,
+        DatosRespuestaTopico datosRespuestaTopico) {
 
-                @NotBlank String mensaje) {
+    public DatosRespuestaTopico(RespuestaTopico respuestaTopico) {
+        this(respuestaTopico.getId(), null, null);
+    }
 }
