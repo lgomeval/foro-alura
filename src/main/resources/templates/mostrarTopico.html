@@ -84,25 +84,29 @@
                       class="text-body-primary"
                       th:text="${topicos.fecha_creacion}"
                     ></small></span
-                  ><br />
-                </div>
+                  ><br/>
+                </div>                                                                         <!-- reaccionar a respuestas -->
+                  <a class="btn btn-sm btn-outline-warning" th:href="@{/reaccionar/{id}(id=${topicos.id})}">Responder</a>    
               </div>
-              <div class="py-4" >
+              <!-- Respuesta del Topico -->
+              <div class="py-4" th:if="${respuestaTopico != null and not #lists.isEmpty(respuestaTopico)}">
                 <h1 class="fw-light text-left">Respuestas del Tópico actual :</h1>
-                <div class="card shadow" >
+                <div class="card shadow" th:each="respuesta : ${respuestaTopico}">
                   <div class="container">               
-                    <span>Por : <a class="icon-link" href="#" th:text="${respuestaTopico.autor}"></a></span><br>
-                    <span>Respuesta : <small class="text-body-primary" th:text="${respuestaTopico.mensaje}"></small></span><br>
-                    <span>Desde : <small class="text-body-primary" th:text="${respuestaTopico.fecha_creacion}"></small></span><br>                  
+                    <span >Autor : <a class="icon-link" href="#" th:text="${respuesta.autor}"></a></span><br>
+                    <span>Respuesta : <small class="text-body-primary" th:text="${respuesta.mensaje}"></small></span><br>
+                    <span>Desde : <small class="text-body-primary" th:text="${respuesta.fecha_creacion}"></small></span><br>
+                   
                   </div>
+
                 </div>
+
               </div>
               <!-- fin de mostrar la respuesta del topico -->
 
               <p class="text-center">
                 <a href="/" class="btn btn-outline-primary my-2"
-                  >Volver al Foro</a
-                >
+                  >Volver al Foro</a>
               </p>
             </div>
           </div>
@@ -111,7 +115,6 @@
         </div>
       </div>
     </main>
-
     <footer th:replace="~{plantilla :: footer}"></footer>
   </body>
 </html>

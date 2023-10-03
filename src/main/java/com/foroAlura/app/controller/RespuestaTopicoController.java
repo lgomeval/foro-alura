@@ -1,67 +1,84 @@
 package com.foroAlura.app.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.foroAlura.app.respuestaTopico.DatosRespuestaTopico;
-import com.foroAlura.app.respuestaTopico.RespuestaService;
+import com.foroAlura.app.respuestaTopico.DatosRegistroRespuestaTopico;
 import com.foroAlura.app.respuestaTopico.RespuestaTopico;
-import jakarta.validation.Valid;
+import com.foroAlura.app.respuestaTopico.RespuestaTopicoRepository;
+import com.foroAlura.app.topicos.TopicoRepository;
+import com.foroAlura.app.topicos.Topicos;
+import com.foroAlura.app.usuarios.UsuarioRepository;
 
 @Controller
-@RequestMapping("/respuesta")
+@RequestMapping
 public class RespuestaTopicoController {
 
     @Autowired
-    private RespuestaService respuestaService;
+    RespuestaTopicoRepository respuestatopicorepository;
 
-    @GetMapping
-    public List<DatosRespuestaTopico> getRespuesta() {
+    @Autowired
+    TopicoRepository topicorepository;
 
-        return respuestaService.getRespuesta();
+    @Autowired
+    UsuarioRepository usuarioRepository;
+
+    // Metodo que muestra el formulario para guardar la respuesta en la bbdd
+
+    @GetMapping("/reaccionar/{id}")
+    public String mostrarFormularioRespuestaTopico(@PathVariable Long id, Model model) {
+
+        // Obtener el nombre de usuario del usuario autenticado
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        // Obtener el ID del usuario desde tu repositorio o servicio (dependiendo de tu
+        // configuración)
+        Long usuarioId = usuarioRepository.obtenerIdPorNombre(username);
+
+        model.addAttribute("usuarioId", usuarioId);
+        model.addAttribute("idTopico", id);
+        return "crear-respuesta-topico";
     }
 
-    @GetMapping("usuario/{id}")
-    public List<DatosRespuestaTopico> getRespuestaUsuario(@RequestParam Long id) {
+    // Metodo que guardar la respuesta en la BBDD
+    @PostMapping("/crear-respuesta-topico")
+    public String guardarRespuestaTopico(@ModelAttribute DatosRegistroRespuestaTopico datosRegistroRespuestaTopico,
+            Model model, RedirectAttributes redirectAttributes) {
 
-        return respuestaService.getRespuestaUsuario(id);
+        // Obtener el valor de topico_id del formulario
+        Integer topicoId = datosRegistroRespuestaTopico.topico_id();
+
+        Topicos topicos = topicorepository.findById(topicoId);
+
+        if (topicos == null) {
+            // Manejar el caso en el que no se encuentra el tópico
+            redirectAttributes.addFlashAttribute("error", "El tópico no existe");
+            return "redirect:/"; // Redirigir a la página principal o donde corresponda
+        }
+
+        // Crear una instancia de RespuestaTopico
+        RespuestaTopico respuestaTopico = new RespuestaTopico(datosRegistroRespuestaTopico);
+
+        // Asignar el valor de topico_id a la instancia de RespuestaTopico
+        respuestaTopico.setTopico_id(topicos);
+
+        // Lógica para guardar la respuesta al tópico
+        respuestatopicorepository.save(respuestaTopico);
+        redirectAttributes.addFlashAttribute("success", "Tópico Agregadado Existosamente");
+
+        // Puedes utilizar el ID para asociar la respuesta al tópico correspondiente
+        // Luego redirige al usuario a la página de detalles del tópico
+
+        return "redirect:/";
     }
-
-    @GetMapping("/topico/{id}")
-    public List<DatosRespuestaTopico> getRespuestaTopico(@RequestParam Long id) {
-        return respuestaService.getRespuestaTopico(id);
-    }
-
-    @PostMapping
-    public DatosRespuestaTopico CrearRespuesta(@RequestBody @Valid RespuestaTopico respuestaTopico) {
-        return respuestaService.CrearRespuesta(respuestaTopico);
-    }
-
-    @DeleteMapping("/{id}")
-    public String eliminarRespuesta(@RequestParam Long id) {
-        respuestaService.eliminarRespuesta(id);
-
-        return "/";
-    }
-
-    // @GetMapping("mostrarTopico/{id}")
-    // public String mostrarRespuestaTopico(@RequestParam Long id, Model model) {
-
-    // RespuestaTopico respuestaTopico =
-    // respuestaTopicoRepository.findById(id).orElse(null);
-
-    // if (respuestaTopico == null) {
-    // return "Error404";
-    // }
-
-    // return "mostrarTopico";
-    // }
 }

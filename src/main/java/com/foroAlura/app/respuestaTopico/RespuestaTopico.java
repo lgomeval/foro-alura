@@ -1,7 +1,5 @@
 package com.foroAlura.app.respuestaTopico;
 
-import java.time.LocalDateTime;
-
 import com.foroAlura.app.topicos.Topicos;
 import com.foroAlura.app.usuarios.Usuario;
 
@@ -18,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table(name = "respuesta_topicos")
-@Entity(name = "RespuestaTopicos")
+@Entity(name = "RespuestaTopico")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -41,13 +39,15 @@ public class RespuestaTopico {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    public void setTieneRespuestas(boolean tieneRespuestas) {
+    // Contructor
+    public RespuestaTopico(DatosRegistroRespuestaTopico datosRegistroRespuestaTopico) {
+        this.mensaje = datosRegistroRespuestaTopico.getMensaje();
+        this.autor = datosRegistroRespuestaTopico.getAutor();
+        this.fecha_creacion = datosRegistroRespuestaTopico.getFecha_creacion();
+
     }
 
-    public void setCrear_fecha(LocalDateTime now) {
+    public void setTopico_id(Topicos topicos) {
+        this.topicos = topicos;
     }
-
-    public void setCrearRespuesta(String mensaje2) {
-    }
-
 }

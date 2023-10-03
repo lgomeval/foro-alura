@@ -1,7 +1,5 @@
 package com.foroAlura.app.topicos;
 
-import com.foroAlura.app.respuestaTopico.DatosRespuestaTopico;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +29,8 @@ public class Topicos {
     private String autor;
     private String curso;
 
+    private byte[] imagen;
+
     // Contructor
 
     public Topicos(DatosRegistroTopico datosRegistroTopico) {
@@ -41,6 +41,7 @@ public class Topicos {
         this.curso = datosRegistroTopico.curso();
         this.estatus = datosRegistroTopico.estatus();
         this.fecha_creacion = datosRegistroTopico.fecha_creacion();
+        this.imagen = datosRegistroTopico.imagen();
     }
 
     public Topicos(DatosActualizarTopico datosActualizarTopico) {
@@ -50,6 +51,7 @@ public class Topicos {
         this.autor = datosActualizarTopico.autor();
         this.curso = datosActualizarTopico.curso();
         this.estatus = datosActualizarTopico.estatus();
+
     }
 
     public void setTitulo(String titulo) {
@@ -72,9 +74,19 @@ public class Topicos {
         this.estatus = estatus;
     }
 
-    public Topicos(DatosRespuestaTopico datosRespuestaTopico) {
-    }
-
     public void setTieneRespuestas(boolean tieneRespuestas) {
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFecha_creacion(String fecha_creacion) {
+        this.fecha_creacion = fecha_creacion;
+    }
+
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
+    }
+
 }

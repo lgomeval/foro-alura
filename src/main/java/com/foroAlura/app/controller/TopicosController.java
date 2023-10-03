@@ -69,10 +69,7 @@ public class TopicosController {
 
             // Mostrar la respuesta del topico
 
-            RespuestaTopico respuestaTopico = respuestatopicorepository.findById(id).orElse(null);
-            if (respuestaTopico == null) {
-                return "Error404";
-            }
+            List<RespuestaTopico> respuestaTopico = respuestatopicorepository.findByTopicosId(id);
 
             model.addAttribute("respuestaTopico", respuestaTopico);
 

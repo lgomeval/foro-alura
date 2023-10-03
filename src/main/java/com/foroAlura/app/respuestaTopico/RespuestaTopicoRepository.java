@@ -10,6 +10,8 @@ public interface RespuestaTopicoRepository extends JpaRepository<RespuestaTopico
 
     List<RespuestaTopico> findAllByUsuarioId(Long id);
 
-    List<RespuestaTopico> findAllByTopicosId(Long id);
+    List<RespuestaTopico> findByTopicosId(Long id);
+
+    int countByTopicosId(Long id);
 
 }
