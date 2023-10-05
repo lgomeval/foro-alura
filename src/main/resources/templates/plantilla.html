@@ -95,6 +95,12 @@
       .imagen{
         border-radius: 3px;
       }
+
+      .paginacion {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+      }
     </style>
   </head>
   <body>
@@ -235,7 +241,7 @@
               <circle cx="12" cy="13" r="4" />
             </svg>
             <strong>Foro Alura: Bienvenido ->
-              <small th:text="${usuarios}"></small>
+              <small th:text="${usuario}"></small>
             </strong>
           </a>
           <button

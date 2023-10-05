@@ -98,7 +98,23 @@
                 <a class="btn btn-sm btn-outline-warning" th:href="@{/reaccionar/{id}(id=${topicos.id})}">Responder</a>
               </div>
             </div>
+          </div><br>
+          <!-- Inicio de la paginación -->
+          <div class="paginacion">  
+            <ul class="pagination">                  
+              <li class="page-item" th:if="${topicos.hasPrevious()}">
+                <a class="page-link" th:href="@{'/?page=' + ${topicos.previousPageable().pageNumber} }">Anterior</a>
+              </li>&nbsp;&nbsp;&nbsp;
+              <!-- Mostrar el número de página actual -->
+              <li class="page-item">
+                <span class="page-link">Página <span th:text="${topicos.number + 1}"></span> de <span th:text="${topicos.totalPages}"></span> </span>
+              </li>&nbsp;&nbsp;&nbsp;
+              <li class="page-item" th:if="${topicos.hasNext()}">
+                <a class="page-link" th:href="@{'/?page=' + ${topicos.nextPageable().pageNumber} }">Siguiente</a>
+              </li>     
+            </ul>
           </div>
+          <!-- Fin de la paginación -->
         </div>
       </div>
     </main>

@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -21,6 +24,9 @@ import com.foroAlura.app.topicos.DatosActualizarTopico;
 import com.foroAlura.app.topicos.DatosRegistroTopico;
 import com.foroAlura.app.topicos.TopicoRepository;
 import com.foroAlura.app.topicos.Topicos;
+import com.foroAlura.app.usuarios.Usuario;
+import com.foroAlura.app.usuarios.UsuarioRepository;
+
 import jakarta.validation.Valid;
 
 @Controller
@@ -33,19 +39,30 @@ public class TopicosController {
     @Autowired
     RespuestaTopicoRepository respuestatopicorepository;
 
+    @Autowired
+    UsuarioRepository usuarioRepository;
+
     // Listamos todos los topicos existentes
     @GetMapping("/")
-    public String listarTopicos(Model model) {
+    public String listarTopicos(Model model, @RequestParam(name = "page", defaultValue = "0") int page) {
 
+        // Paginacion
+        final int pageSize = 6;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        // Recuperamos el usuario para mostrarlo en la Bienvenida
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        List<Topicos> topicos = topicorepository.findAll();
-        List<RespuestaTopico> respuestaTopicos = respuestatopicorepository.findAll();
+        Usuario usuario = usuarioRepository.findByEmail(username);
 
-        model.addAttribute("respuestatopicos", respuestaTopicos);
+        // List<Topicos> topicos = topicorepository.findAll();
+        Page<Topicos> topicos = topicorepository.findAll(pageable);
+
+        model.addAttribute("respuestatopicos", respuestatopicorepository);
         model.addAttribute("topicos", topicos);
         model.addAttribute("usuarios", username);
+        model.addAttribute("usuario", usuario.getUsername());
 
         return "/topicos";
     }
