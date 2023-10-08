@@ -3,7 +3,9 @@
 <head th:replace="~{plantilla :: head}">
 </head>
 <body>
+    <!-- Tema oscuro -->
   <section th:replace="~{plantilla :: menu-contraste}"></section>
+
   <!-- Mensajes de confirmacion -->
   <div class="container">
     <div class="alert alert-success alert-dismissible" th:if="${success != null}">
@@ -21,21 +23,81 @@
       <button type="button" class="btn btn-close" data-dismiss="alert">&times;</button>
     </div>
   </div>
+  <!-- Fin mensajes de confirmacion -->
 
+  
   <header th:replace="~{plantilla :: header}"></header>
+
     <main>
       <section class="container">
         <div class="row py-lg-5">
           <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-light">Tópicos más recientes</h1>
-            <p class="lead text-body-secondary">
-            </p>
+          </div>
 
-          </div>
-            <p>
-              <a href="/agregar" class="btn btn-outline-primary my-2">Crear nuevo tópico</a>
-            </p>
-          </div>
+          <!-- Button trigger crearTopicoModal -->
+          <p>
+            <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#crearTopicoModal">Crear nuevo tópico</button>
+          </p>
+          
+          <!-- Modal Crear Topico -->
+          <div class="modal fade" id="crearTopicoModal" tabindex="-1" aria-labelledby="crearTopicoModalLabel" aria-hidden="true">
+            <div class="modal-dialog" >
+              <h1 style="background-color: rgb(3, 71, 25); border-radius: 10px 10px 0 0 ;" class="modal-title fs-5 text-center" id="crearTopicoModalLabel">Aqui podras insertar  topicos a Nuestro Foro</h1>
+              <div class="modal-content">
+                <div class="modal-header">
+                  <div class="modal-body">
+                    <div class="container-fluid">
+                      <input class="form-control me-2"  readonly type="search" name="id" placeholder="Todos los campos son obligatorios.">
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-body">
+                  <form  th:object="${Topico}" th:action="@{/crear-topicos}" method="post">
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1" for="titulo">Titulo : </span>
+                      <input class="form-control" type="text" id="titulo" name="titulo"   required/>
+                    </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1" for="mensaje">Mensaje : </span>
+                      <textarea class="form-control" id="mensaje"                      name="mensaje" required></textarea>
+                    </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1" for="autor">Autor : </span>
+                      <input class="form-control" type="text" id="autor" name="autor"   required/>
+                    </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1" for="curso">Curso : </span>
+                      <input class="form-control" type="text" id="curso"
+                        name="curso" required/> 
+                    </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1" for="estatus">Estado : </span>
+                      <input class="form-control" type="text" id="estatus"
+                        name="estatus" required/> 
+                    </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1" for="imagen">Cargar Imagen : </span>
+                      <input class="form-control" type="file" id="imagen"
+                        name="imagen"/> 
+                    </div>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1" for="fecha_creacion">Fecha : </span>
+                      <input class="form-control" type="date" id="fecha_creacion"
+                        name="fecha_creacion" required/> 
+                    </div>
+
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+
+                    <button class="btn btn-outline-success my-2" type="submit" id="btnEnviar">Enviar tópico </button>
+
+                  </form>
+                </div>
+                <div class="modal-footer"></div>
+              </div>
+            </div>
+          </div>          
+          
           <div class="container-fluid">
             <form class="d-flex" role="search" th:action="@{/mostrarTopico}" method="get">
               <input class="form-control me-2" type="search" name="busqueda" placeholder="Buscar Tópico por ID, Autor o Curso" aria-label="Search" id="busquedaInput">
@@ -76,18 +138,115 @@
                 <div class="card-body">
                   <a th:href="@{/mostrarTopico(id=${topicos.id})}" class="icon-link" th:text="${topicos.mensaje}"></a><br><br>
                   <!-- contador de respuestas -->
+                  
+                  <!-- fin de contador de respuestas -->
 
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                    <form th:action="@{/actualizar}" method="get">
-                        <input type="hidden" name="id" th:value="${topicos.id}">
-                        <button class="btn btn-sm btn-outline-success" type="submit">Modificar</button>
-                    </form>
-
-                      &nbsp;&nbsp;
-
-                      <a class="btn btn-sm btn-outline-danger" th:href="@{/eliminar-topico(id=${topicos.id})}">Eliminar</a>
+                    <!-- bucle que recorre los tópicos a modificar -->
+                    <div th:each="topico : ${topicos}">
+                      <!-- Button trigger modificarTopicoModal -->
+                      <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" th:data-bs-target="'#modificarTopicoModal-' + ${topico.id}">Modificar</button>
+                      
+                      <!-- Modal para actualizar Topicos -->
+                      <div class="modal fade" th:id="'modificarTopicoModal-' + ${topico.id}"  tabindex="-1" th:attr("aria-labelledby , 'modificarTopicoModalLabel-' + ${topico.id})" aria-hidden="true">
+                        <div class="modal-dialog" >
+                          <h1 style="background-color: rgb(5, 29, 66); border-radius: 10px 10px 0 0 ;" class="modal-title fs-5 text-center" id="modificarTopicoModalLabel">Aqui puedes modificar tus tópicos.</h1>
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <div class="modal-body">
+                                <div class="container-fluid">
+                                  <input class="form-control me-2"  readonly type="search" name="id" placeholder="Solo podras modificar: Titulo, Mensaje, Curso.">          
+                                </div>
+                              </div>
+                            </div>
+                            <div class="modal-body">
+                              <form class="form-control" th:object="${Topico}" th:action="@{/actualizar-topicos}" method="post">
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="id">ID : </span>
+                                  <input class="form-control" type="number" id="id" name="id" th:value="${topico.id}" readonly/>
+                                </div>
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="titulo">Titulo : </span>
+                                  <input class="form-control" type="text" id="titulo" name="titulo" th:value="${topico.titulo}" required/>
+                                </div>
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="mensaje">Mensaje : </span>
+                                  <input class="form-control" id="mensaje" th:value="${topico.mensaje}" name="mensaje" required></input>
+                                </div>
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="autor">Autor : </span>
+                                  <input class="form-control" type="text" id="autor" name="autor" th:value="${topico.autor}" readonly/>
+                                </div>
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="curso">Curso : </span>
+                                  <input class="form-control" type="text" id="curso"
+                                    name="curso" th:value="${topico.curso}" required/> 
+                                </div>
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="estatus">Estado : </span>
+                                  <input class="form-control" type="text" id="estatus"
+                                    name="estatus" th:value="${topico.estatus}" readonly/> 
+                                </div>
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="imagen">Cargar Imagen : </span>
+                                  <input class="form-control" type="file" id="imagen"
+                                    name="imagen"/> 
+                                </div>
+                                <div class="input-group mb-3">
+                                  <span class="input-group-text" id="basic-addon1" for="fecha_creacion">Fecha : </span>
+                                  <input class="form-control" type="date" id="fecha_creacion"
+                                    name="fecha_creacion" th:value="${topico.fecha_creacion}" readonly/> 
+                                </div>
+            
+                                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            
+                                <button class="btn btn-outline-primary my-2" type="submit" id="btnEnviar">Modificar tópico </button>
+                              </form>
+                            </div>
+                            <div class="modal-footer"></div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
+                    <!-- Fin del modal actualizar Topicos -->
+
+                    &nbsp;&nbsp;
+                    <!-- Button trigger eliminarTopicoModal -->
+                    <!-- Bucle que recorre los tópicos -->
+                    <div th:each="topico : ${topicos}">
+                      <!-- Botón "Eliminar" que abre el modal específico para este tópico -->
+                      <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" th:data-bs-target="'#eliminarTopicoModal-' + ${topico.id}">Eliminar</button>
+
+                      <!-- Modal para eliminar el tópico específico -->
+                      <div class="modal fade" th:id="'eliminarTopicoModal-' + ${topico.id}" tabindex="-1" th:attr("aria-labelledby", 'eliminarTopicoModalLabel-' + ${topico.id}) aria-hidden="true">
+                        <div class="modal-dialog">
+                          <h1 style="background-color: rgb(212, 16, 16); border-radius: 10px 10px 0 0 ;" class="modal-title fs-5 text-center" th:id="'eliminarTopicoModalLabel-' + ${topico.id}">¿Estás seguro de que deseas eliminar el tópico de Nuestro Foro?</h1>
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h3 class="fw-light text-left">Autor del Tópico actual : <span th:text="${topico.autor}"></span></h3>
+                            </div>
+                            <div class="modal-body">
+                              <p class="card-text" th:text="${topico.titulo}"></p>
+                              <p class="card-text" th:text="${topico.mensaje}"></p>
+                              <p class="card-text" th:text="${topico.autor}"></p>
+                              <p class="card-text" th:text="${topico.fecha_creacion}"></p>
+                            </div>
+                            <div class="modal-footer">
+                            <!-- Botón para confirmar la eliminación -->
+                            <form th:action="@{/eliminar}" method="post">
+                              <input type="hidden" name="id" th:value="${topicos.id}">
+                              <button class="btn btn-outline-danger my-2" type="submit">Eliminar</button>
+                            </form>
+                              <!-- Botón para cerrar el modal -->
+                              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>                  
+                    </div>
+                    <!-- Fin modal para eliminar el tópico específico -->
                   </div><br>
                   <a class="icon-link" href="#" th:text="${topicos.autor}"></a><br>
                   <a class="icon-link" href="#" th:text="${topicos.curso}"></a>
@@ -96,6 +255,58 @@
                 </div>
                 <!-- respuestas -->
                 <a class="btn btn-sm btn-outline-warning" th:href="@{/reaccionar/{id}(id=${topicos.id})}">Responder</a>
+              <!-- bucle que recorre los tópicos -->
+              <div th:each="topico : ${topicos}">
+                <!-- Button trigger reaccionarTopicoModal -->
+                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" th:data-bs-target="'#reaccionarTopicoModal-' + ${topico.id}">Responder</button>
+                
+                <!-- Modal para responder a los Topicos -->
+                <div class="modal fade" th:id="'reaccionarTopicoModal-' + ${topico.id}"  tabindex="-1" th:attr("aria-labelledby , 'reaccionarTopicoModalLabel-' + ${topico.id})" aria-hidden="true">
+                  <div class="modal-dialog" >
+                    <h1 style="background-color: rgb(73, 97, 8); border-radius: 10px 10px 0 0 ;" class="modal-title fs-5 text-center" id="reaccionarTopicoModalLabel">Aqui podras insertar tu reaccion al Tópico.</h1>
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <div class="modal-body">
+                          <div class="container-fluid">
+                            <input class="form-control me-2"  readonly type="search" name="id" placeholder="Recuerda las normas de respeto en las respuestas.">
+                            <h3 class="fw-light">Aqui podras insertar tu reaccion al Tópico <span th:text="${idTopico}"></span> </h3>          
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-body">
+                        <form class="form-control" th:action="@{/crear-respuesta-topico}" method="post">
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1"  for="topico_id">Tópico ID : </span>
+                            <input class="form-control" type="text" th:value="${idTopico}" th:flied="*{topico_id}" name="topico_id" readonly>
+                          </div>
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" for="usuarioId">Usuario ID : </span>
+                            <input class="form-control" type="text" th:value="${usuarioId}" name="usuarioId" readonly>
+                          </div>
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" for="mensaje">Mensaje : </span>
+                            <input class="form-control"  type="text" id="mensaje" name="mensaje" th:flied="*{mensaje}"  required>
+                          </div>
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" for="autor">Autor : </span>
+                            <input class="form-control" type="text" name="autor" id="autor" th:flied="*{autor}" required>
+                          </div>
+                          <div class="input-group mb-3">
+                            <span class="input-group-text" for="fecha_creacion">Fecha : </span>
+                            <input class="form-control" type="date" name="fecha_creacion" id="fecha_creacion" th:flied="*{fecha_creacion}" required>
+                          </div>
+      
+                          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+      
+                          <button class="btn btn-outline-warning my-2" type="submit" id="btnEnviar">Responder</button>
+                        </form>
+                      </div>
+                      <div class="modal-footer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Fin del modal reaccionar a Topicos -->
               </div>
             </div>
           </div><br>
@@ -118,6 +329,32 @@
         </div>
       </div>
     </main>
+    <script>
+      $(document).ready(function () {
+        $("#formularioCrearTopico").submit(function (e) {
+          e.preventDefault(); // Evita la recarga de la página
+  
+          // Obtén los datos del formulario modal
+          var formData = $(this).serialize();
+  
+          // Realiza una solicitud AJAX para enviar los datos al servidor
+          $.ajax({
+            type: "POST",
+            url: "/crear-topicos", // La URL de tu controlador
+            data: formData,
+            success: function (response) {
+              // Maneja la respuesta del servidor (puede mostrar un mensaje de éxito)
+              $("#crearTopicoModal").modal("hide"); // Cierra el modal
+              // Puedes realizar otras acciones después de agregar el tópico, como actualizar la lista de tópicos en la página principal
+            },
+            error: function (error) {
+              // Maneja los errores si es necesario
+            },
+          });
+        });
+      });
+    </script>
+
     <footer th:replace="~{plantilla :: footer}"></footer>
   </body>
 </html>

@@ -114,14 +114,8 @@ public class TopicosController {
 
     }
 
-    // Para agregar topicos mostramos el formulario y enviamos los datos
-
-    @GetMapping("/agregar")
-    public String formularioAgregar(Model model) {
-
-        model.addAttribute("Topico", new Topicos());
-        return "/crear-topicos";
-    }
+    // Para agregar topicos mostramos el formulario Modal en "/" y enviamos los
+    // datos
 
     @PostMapping("/crear-topicos")
     public String agregar(@ModelAttribute @Valid DatosRegistroTopico datosRegistroTopico,
@@ -135,17 +129,6 @@ public class TopicosController {
     }
 
     // Metodo para Actualizar un Topico
-
-    @GetMapping("/actualizar")
-    public String formularioActualizar(@RequestParam Long id, Model model) {
-
-        Topicos topicos = topicorepository.findById(id).orElse(null);
-        if (topicos == null) {
-            return "Error404";
-        }
-        model.addAttribute("topicos", topicos);
-        return "/actualizar-topicos";
-    }
 
     @PostMapping("/actualizar-topicos")
     public String actualizarTopico(@ModelAttribute @Valid DatosActualizarTopico datosActulizartopicos,
@@ -181,21 +164,6 @@ public class TopicosController {
         }
 
         return "redirect:/";
-    }
-
-    // Metodo para eliminar un Topico
-    @GetMapping("/eliminar-topico")
-    public String confirmarEliminacion(@RequestParam Long id, Model model) {
-
-        Topicos topicos = topicorepository.findById(id).orElse(null);
-
-        model.addAttribute("topicos", topicos);
-
-        if (topicos == null) {
-            return "error-404";
-        }
-
-        return "/eliminar-topico";
     }
 
     @PostMapping("/eliminar")
